@@ -12,7 +12,7 @@ describe('configFactory', () => {
     process.env = originalEnv;
   });
 
-  it('returns default configuration when environment variables are omitted', () => {
+  it('returns default development configuration (port 3001) when environment variables are omitted', () => {
     delete process.env.PORT;
     delete process.env.BACKEND_DEV_PORT;
     delete process.env.BACKEND_PORT;
@@ -23,20 +23,33 @@ describe('configFactory', () => {
 
     const config = configFactory();
 
-    expect(config.port).toBe(3000);
+    expect(config.port).toBe(3001);
     expect(config.host).toBe('0.0.0.0');
     expect(config.nodeEnv).toBe('development');
     expect(config.databaseUrl).toContain('127.0.0.1:5433');
     expect(config.corsOrigin).toBe('*');
   });
 
-  it('respects BACKEND_DEV_PORT when PORT is not provided', () => {
+  it('defaults to port 3000 in production when ports are omitted', () => {
     delete process.env.PORT;
-    process.env.BACKEND_DEV_PORT = '3001';
+    delete process.env.BACKEND_DEV_PORT;
+    delete process.env.BACKEND_PORT;
+    process.env.NODE_ENV = 'production';
 
     const config = configFactory();
 
-    expect(config.port).toBe(3001);
+    expect(config.port).toBe(3000);
+    expect(config.nodeEnv).toBe('production');
+  });
+
+  it('respects BACKEND_DEV_PORT in development environment', () => {
+    delete process.env.PORT;
+    process.env.NODE_ENV = 'development';
+    process.env.BACKEND_DEV_PORT = '3005';
+
+    const config = configFactory();
+
+    expect(config.port).toBe(3005);
   });
 
   it('populates configuration correctly when custom environment variables are provided', () => {

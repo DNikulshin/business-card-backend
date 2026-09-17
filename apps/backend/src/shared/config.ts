@@ -19,16 +19,22 @@ const DEFAULT_DATABASE_URL =
 export const DATABASE_URL = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
 
 export const configFactory = (): AppConfig => {
+  const nodeEnv = process.env.NODE_ENV || 'development';
+  const defaultPort = nodeEnv === 'production' ? '3000' : '3001';
+
   const rawPort =
     process.env.PORT ||
+    (nodeEnv === 'production'
+      ? process.env.BACKEND_PORT
+      : process.env.BACKEND_DEV_PORT) ||
     process.env.BACKEND_DEV_PORT ||
     process.env.BACKEND_PORT ||
-    '3000';
+    defaultPort;
 
   return {
     port: parseInt(rawPort, 10),
     host: process.env.HOST || '0.0.0.0',
-    nodeEnv: process.env.NODE_ENV || 'development',
+    nodeEnv,
     databaseUrl: process.env.DATABASE_URL || DEFAULT_DATABASE_URL,
     corsOrigin: process.env.CORS_ORIGIN || '*',
   };
