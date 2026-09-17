@@ -10,22 +10,27 @@ async function bootstrap() {
 
   app.enableCors();
 
-  const configService = app.get<ConfigService<AppConfig>>(ConfigService);
+  const configService = app.get(ConfigService<AppConfig, true>);
 
-  const nodeEnv = configService.getOrThrow('nodeEnv', { infer: true });
-  const port = configService.getOrThrow('port', { infer: true });
-  const host = configService.getOrThrow('host', { infer: true });
+  const nodeEnv = configService.getOrThrow<string>('nodeEnv', { infer: true });
+  const port = configService.getOrThrow<number>('port', { infer: true });
+  const host = configService.getOrThrow<string>('host', { infer: true });
 
   await app.listen(port, host);
 
-  logger.log(`[bootstrap] Сервер запущен в режиме: ${nodeEnv.toUpperCase()}`);
   logger.log(
-    `[bootstrap] GraphQL API доступен по адресу: http://localhost:${port}/graphql`,
+    `[bootstrap] Application running in ${nodeEnv.toUpperCase()} mode`,
+  );
+  logger.log(
+    `[bootstrap] GraphQL Playground available at: http://${host === '0.0.0.0' ? 'localhost' : host}:${port}/graphql`,
+  );
+  logger.log(
+    `[bootstrap] Health endpoint available at: http://${host === '0.0.0.0' ? 'localhost' : host}:${port}/health`,
   );
 }
 
-bootstrap().catch((err) => {
+bootstrap().catch((error: unknown) => {
   const logger = new Logger('Shutdown');
-  logger.error('Critical error during application bootstrap:', err);
+  logger.error('Fatal error encountered during application bootstrap:', error);
   process.exit(1);
 });

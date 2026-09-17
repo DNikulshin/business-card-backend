@@ -1,16 +1,11 @@
-import { defineConfig } from 'prisma/config';
-
-const { DATABASE_URL } = await import('./dist/shared/config.js').catch(
-  () => import('./src/shared/config.js'),
-);
+import 'dotenv/config';
+import { defineConfig, type PrismaConfig } from 'prisma/config';
 
 export default defineConfig({
   schema: 'prisma/schema.prisma',
-  migrations: {
-    path: 'prisma/migrations',
-    seed: 'tsx prisma/seed.ts',
-  },
   datasource: {
-    url: DATABASE_URL,
+    url:
+      process.env.DATABASE_URL ||
+      'postgresql://postgres:postgres@127.0.0.1:5433/business_card?schema=public',
   },
-});
+}) satisfies PrismaConfig;
