@@ -18,19 +18,14 @@ async function bootstrap() {
 
   await app.listen(port, host);
 
-  logger.log(
-    `[bootstrap] Application running in ${nodeEnv.toUpperCase()} mode`,
-  );
-  logger.log(
-    `[bootstrap] GraphQL Playground available at: http://${host === '0.0.0.0' ? 'localhost' : host}:${port}/graphql`,
-  );
-  logger.log(
-    `[bootstrap] Health endpoint available at: http://${host === '0.0.0.0' ? 'localhost' : host}:${port}/health`,
-  );
+  const displayHost = host === '0.0.0.0' ? 'localhost' : host;
+  logger.log(`Application running in ${nodeEnv} mode`);
+  logger.log(`GraphQL Playground: http://${displayHost}:${port}/graphql`);
+  logger.log(`Health check: http://${displayHost}:${port}/health`);
 }
 
 bootstrap().catch((error: unknown) => {
   const logger = new Logger('Shutdown');
-  logger.error('Fatal error encountered during application bootstrap:', error);
+  logger.error('Fatal error during startup', error);
   process.exit(1);
 });

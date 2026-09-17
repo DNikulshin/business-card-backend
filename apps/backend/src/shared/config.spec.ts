@@ -12,7 +12,7 @@ describe('configFactory', () => {
     process.env = originalEnv;
   });
 
-  it('returns default development configuration (port 3001) when environment variables are omitted', () => {
+  it('returns default development configuration when environment variables are omitted', () => {
     delete process.env.PORT;
     delete process.env.BACKEND_DEV_PORT;
     delete process.env.BACKEND_PORT;
@@ -52,7 +52,7 @@ describe('configFactory', () => {
     expect(config.port).toBe(3005);
   });
 
-  it('populates configuration correctly when custom environment variables are provided', () => {
+  it('reads custom environment variables', () => {
     process.env.PORT = '4000';
     process.env.HOST = '127.0.0.1';
     process.env.NODE_ENV = 'production';

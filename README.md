@@ -4,7 +4,8 @@ Backend service providing a GraphQL API for a developer profile, skills, experie
 
 ## Demo
 
-Apollo Sandbox: https://dev.dnikulshin.ru/proxy/3000/graphql
+- **Render (Live Production):** [https://business-card-backend-latest.onrender.com/graphql](https://business-card-backend-latest.onrender.com/graphql)
+- **Apollo Sandbox (Self-Hosted):** [https://dev.dnikulshin.ru/proxy/3000/graphql](https://dev.dnikulshin.ru/proxy/3000/graphql)
 
 ## Requirements
 

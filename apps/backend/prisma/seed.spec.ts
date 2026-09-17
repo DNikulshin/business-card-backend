@@ -24,7 +24,7 @@ describe('seedProfile', () => {
     logSpy.mockRestore();
   });
 
-  it('is idempotent: does not create profile if one already exists', async () => {
+  it('does not create profile if one already exists', async () => {
     mockPrisma.profile.findFirst.mockResolvedValue({ id: 1, name: 'Existing' });
 
     const result = await seedProfile(prismaMock);
