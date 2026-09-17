@@ -1,0 +1,40 @@
+name: business-card-prod
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_PROD_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PROD_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_PROD_DB:-business_card}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_PROD_USER:-postgres}"]
+      interval: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    env_file: []
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: ${DATABASE_PROD_URL:-postgresql://postgres:postgres@postgres:5432/business_card?schema=public}
+    ports:
+      - "${BACKEND_PROD_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  postgres_data:
