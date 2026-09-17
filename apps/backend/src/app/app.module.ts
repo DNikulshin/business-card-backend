@@ -1,0 +1,38 @@
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { PrismaModule } from '../services/prisma/prisma.module.js';
+import { ProfileModule } from '../features/profile/profile.module.js';
+import { AppController } from './app.controller.js';
+import { AppService } from './app.service.js';
+import { configFactory } from '../shared/config.js';
+import { DEFAULT_QUERY } from './constants.js';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configFactory],
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: true,
+      playground: false,
+      plugins: [
+        ApolloServerPluginLandingPageLocalDefault({
+          document: DEFAULT_QUERY,
+          footer: false,
+        }),
+      ],
+      csrfPrevention: false,
+      introspection: true,
+    }),
+    PrismaModule,
+    ProfileModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
