@@ -1,4 +1,9 @@
-import 'dotenv/config';
+import path from 'node:path';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(process.cwd(), '../../.env') });
+
+dotenv.config();
 
 export interface AppConfig {
   port: number;
@@ -13,12 +18,20 @@ const DEFAULT_DATABASE_URL =
 
 export const DATABASE_URL = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
 
-export const configFactory = (): AppConfig => ({
-  port: parseInt(process.env.PORT || '3000', 10),
-  host: process.env.HOST || '0.0.0.0',
-  nodeEnv: process.env.NODE_ENV || 'development',
-  databaseUrl: process.env.DATABASE_URL || DEFAULT_DATABASE_URL,
-  corsOrigin: process.env.CORS_ORIGIN || '*',
-});
+export const configFactory = (): AppConfig => {
+  const rawPort =
+    process.env.PORT ||
+    process.env.BACKEND_DEV_PORT ||
+    process.env.BACKEND_PORT ||
+    '3000';
+
+  return {
+    port: parseInt(rawPort, 10),
+    host: process.env.HOST || '0.0.0.0',
+    nodeEnv: process.env.NODE_ENV || 'development',
+    databaseUrl: process.env.DATABASE_URL || DEFAULT_DATABASE_URL,
+    corsOrigin: process.env.CORS_ORIGIN || '*',
+  };
+};
 
 export default configFactory;
