@@ -6,6 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "type": "module",
+  "imports": {
+    "#prisma/*": "./generated/prisma/*"
+  },
   "scripts": {
     "build": "nest build",
     "dev": "nest start --watch",
