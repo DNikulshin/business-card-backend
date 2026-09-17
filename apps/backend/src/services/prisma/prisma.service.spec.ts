@@ -1,11 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { Logger } from '@nestjs/common';
 import { PrismaService } from './prisma.service.js';
 
 describe('PrismaService', () => {
   let service: PrismaService;
+  let errorSpy: ReturnType<typeof vi.spyOn>;
+  let logSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     service = new PrismaService();
+    errorSpy = vi.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
+    logSpy = vi.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    errorSpy.mockRestore();
+    logSpy.mockRestore();
   });
 
   describe('onModuleInit', () => {
