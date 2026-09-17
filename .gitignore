@@ -1,0 +1,44 @@
+# Node
+node_modules/
+dist/
+build/
+coverage/
+*.log
+.env
+.env.*
+!.env.example
+!.env.prod.example
+!.env.dev.example
+*.tsbuildinfo
+
+# Prisma
+generated/
+*.db
+*.db-journal
+
+# Turborepo
+.turbo/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+
+# GraphQL
+schema.gql
+*.gql
+!src/**/*.graphql
+apps/backend/src/schema.gql
+
+# pnpm
+.pnpm-store/

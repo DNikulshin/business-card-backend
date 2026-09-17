@@ -1,0 +1,40 @@
+{
+  "name": "business-card-backend",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types",
+    "dev": "docker compose -f docker-compose.dev.yml up -d && pnpm dev:prepare && turbo run dev --no-cache",
+    "dev:prepare": "pnpm --filter @repo/backend prisma:generate && pnpm --filter @repo/backend prisma:deploy && pnpm --filter @repo/backend prisma:seed",
+    "prod": "docker compose up -d --build --force-recreate",
+    "postprod": "node tooling/print-info.js",
+    "clean": "docker compose down -v && docker compose -f docker-compose.dev.yml down -v",
+    "logs": "docker compose logs -f backend",
+    "prepare": "husky || true"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.1",
+    "prettier": "3.9.6",
+    "turbo": "^2.10.12",
+    "typescript": "^6.0.0"
+  },
+  "lint-staged": {
+    "apps/backend/src/**/*.ts": [
+      "oxlint --fix",
+      "prettier --write"
+    ],
+    "apps/backend/prisma/*.ts": [
+      "prettier --write"
+    ],
+    "*.{md,json,yaml,yml}": [
+      "prettier --write"
+    ]
+  },
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22"
+  }
+}
