@@ -61,4 +61,13 @@ describe('PrismaService', () => {
       await expect(service.onModuleDestroy()).resolves.toBeUndefined();
     });
   });
+
+  it('instantiates with custom DATABASE_URL from process.env', () => {
+    const prev = process.env.DATABASE_URL;
+    process.env.DATABASE_URL =
+      'postgresql://custom:custom@localhost:5432/custom';
+    const instance = new PrismaService();
+    expect(instance).toBeDefined();
+    process.env.DATABASE_URL = prev;
+  });
 });

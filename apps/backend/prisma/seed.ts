@@ -2,7 +2,14 @@ import { PrismaClient } from '#prisma/client.js';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import { pathToFileURL } from 'node:url';
-import { DEFAULT_DATABASE_URL } from './constants.js';
+import fs from 'node:fs';
+
+const isDist = fs.existsSync(
+  new URL('../dist/shared/config.js', import.meta.url),
+);
+const { DEFAULT_DATABASE_URL } = await (isDist
+  ? import('../dist/shared/config.js')
+  : import('../src/shared/config.js'));
 
 const DATABASE_URL = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
 

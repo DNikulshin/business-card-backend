@@ -1,7 +1,8 @@
 import { registerAs } from '@nestjs/config';
-import { DEFAULT_DATABASE_URL } from '../../prisma/constants.js';
 
-export { DEFAULT_DATABASE_URL };
+export const DEFAULT_DATABASE_URL =
+  'postgresql://postgres:postgres@127.0.0.1:5433/business_card?schema=public';
+
 export const DATABASE_URL = DEFAULT_DATABASE_URL;
 
 export interface AppConfig {
