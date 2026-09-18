@@ -87,7 +87,7 @@ export async function seedProfile(prisma: PrismaClient) {
         ...profileData,
       },
     });
-    
+
     await tx.skill.deleteMany({ where: { profileId: 1 } });
     await tx.skill.createMany({
       data: skillsData.map((s) => ({ ...s, profileId: 1 })),
