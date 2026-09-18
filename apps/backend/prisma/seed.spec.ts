@@ -4,18 +4,36 @@ import { PrismaClient } from '#prisma/client.js';
 
 describe('seedProfile', () => {
   let mockTx: {
-    profile: {
+    profile: { upsert: ReturnType<typeof vi.fn> };
+    skill: {
       deleteMany: ReturnType<typeof vi.fn>;
-      create: ReturnType<typeof vi.fn>;
+      createMany: ReturnType<typeof vi.fn>;
+    };
+    experience: {
+      deleteMany: ReturnType<typeof vi.fn>;
+      createMany: ReturnType<typeof vi.fn>;
+    };
+    project: {
+      deleteMany: ReturnType<typeof vi.fn>;
+      createMany: ReturnType<typeof vi.fn>;
     };
   };
   let prismaMock: PrismaClient;
 
   beforeEach(() => {
     mockTx = {
-      profile: {
+      profile: { upsert: vi.fn() },
+      skill: {
         deleteMany: vi.fn().mockResolvedValue({ count: 1 }),
-        create: vi.fn(),
+        createMany: vi.fn(),
+      },
+      experience: {
+        deleteMany: vi.fn().mockResolvedValue({ count: 1 }),
+        createMany: vi.fn(),
+      },
+      project: {
+        deleteMany: vi.fn().mockResolvedValue({ count: 1 }),
+        createMany: vi.fn(),
       },
     };
 
@@ -26,26 +44,21 @@ describe('seedProfile', () => {
     } as unknown as PrismaClient;
   });
 
-  it('atomically synchronizes profile data in database', async () => {
+  it('atomically upserts profile and synchronizes related entities', async () => {
     const created = { id: 1, name: 'Никульшин Дмитрий Юрьевич' };
-    mockTx.profile.create.mockResolvedValue(created);
+    mockTx.profile.upsert.mockResolvedValue(created);
 
     const result = await seedProfile(prismaMock);
 
     expect(prismaMock.$transaction).toHaveBeenCalledTimes(1);
-    expect(mockTx.profile.deleteMany).toHaveBeenCalledTimes(1);
-    expect(mockTx.profile.create).toHaveBeenCalledTimes(1);
+    expect(mockTx.profile.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 1 },
+      }),
+    );
+    expect(mockTx.skill.createMany).toHaveBeenCalledTimes(1);
+    expect(mockTx.experience.createMany).toHaveBeenCalledTimes(1);
+    expect(mockTx.project.createMany).toHaveBeenCalledTimes(1);
     expect(result).toBe(created);
-  });
-
-  it('populates non-empty skills, experiences, and projects', async () => {
-    mockTx.profile.create.mockResolvedValue({ id: 1, name: 'x' });
-
-    await seedProfile(prismaMock);
-
-    const callArg = mockTx.profile.create.mock.calls[0][0];
-    expect(callArg.data.skills.create.length).toBeGreaterThan(0);
-    expect(callArg.data.experiences.create.length).toBeGreaterThan(0);
-    expect(callArg.data.projects.create.length).toBeGreaterThan(0);
   });
 });
