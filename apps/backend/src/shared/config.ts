@@ -1,9 +1,8 @@
 import { registerAs } from '@nestjs/config';
 import { DEFAULT_DATABASE_URL } from '../../prisma/constants.js';
 
-export const DATABASE_URL = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
-
 export { DEFAULT_DATABASE_URL };
+export const DATABASE_URL = DEFAULT_DATABASE_URL;
 
 export interface AppConfig {
   port: number;
