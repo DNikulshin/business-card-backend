@@ -7,14 +7,14 @@ import { PrismaModule } from '../services/prisma/prisma.module.js';
 import { ProfileModule } from '../features/profile/profile.module.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
-import { configFactory } from '../shared/config.js';
+import { config } from '../shared/config.js';
 import { DEFAULT_QUERY } from './constants.js';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configFactory],
+      load: [config],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

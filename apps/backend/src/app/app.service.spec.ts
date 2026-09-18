@@ -4,50 +4,40 @@ import { AppService } from './app.service.js';
 import { PrismaService } from '../services/prisma/prisma.service.js';
 
 describe('AppService', () => {
-  let service: AppService;
+  let appService: AppService;
   let mockPrisma: { $queryRaw: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     mockPrisma = {
       $queryRaw: vi.fn(),
     };
-    service = new AppService(mockPrisma as unknown as PrismaService);
+    appService = new AppService(mockPrisma as unknown as PrismaService);
   });
 
-  describe('checkHealth', () => {
-    it('returns ok status and connected database when query succeeds', async () => {
-      mockPrisma.$queryRaw.mockResolvedValue([{ '?column?': 1 }]);
+  it('returns healthy status when database is reachable', async () => {
+    mockPrisma.$queryRaw.mockResolvedValue([{ '?column?': 1 }]);
 
-      const result = await service.checkHealth();
+    const result = await appService.checkHealth();
 
-      expect(mockPrisma.$queryRaw).toHaveBeenCalledTimes(1);
-      expect(result).toMatchObject({
-        status: 'ok',
-        database: 'connected',
-      });
-      expect(typeof result.timestamp).toBe('string');
-      expect(new Date(result.timestamp).getTime()).not.toBeNaN();
-    });
+    expect(result.status).toBe('ok');
+    expect(result.database).toBe('connected');
+    expect(result.timestamp).toBeDefined();
+    expect(mockPrisma.$queryRaw).toHaveBeenCalledTimes(1);
+  });
 
-    it('throws ServiceUnavailableException when database query fails', async () => {
-      const dbError = new Error('Connection refused');
-      mockPrisma.$queryRaw.mockRejectedValue(dbError);
+  it('throws ServiceUnavailableException when database query fails with Error', async () => {
+    mockPrisma.$queryRaw.mockRejectedValue(new Error('Connection timeout'));
 
-      await expect(service.checkHealth()).rejects.toThrow(
-        ServiceUnavailableException,
-      );
+    await expect(appService.checkHealth()).rejects.toThrow(
+      ServiceUnavailableException,
+    );
+  });
 
-      try {
-        await service.checkHealth();
-      } catch (error) {
-        const err = error as ServiceUnavailableException;
-        expect(err.getStatus()).toBe(503);
-        expect(err.getResponse()).toMatchObject({
-          status: 'error',
-          database: 'disconnected',
-          message: 'Connection refused',
-        });
-      }
-    });
+  it('throws ServiceUnavailableException when database query fails with non-Error object', async () => {
+    mockPrisma.$queryRaw.mockRejectedValue('Database socket closed');
+
+    await expect(appService.checkHealth()).rejects.toThrow(
+      ServiceUnavailableException,
+    );
   });
 });

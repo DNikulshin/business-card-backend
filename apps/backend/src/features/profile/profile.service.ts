@@ -7,12 +7,14 @@ export class ProfileService {
   constructor(private prisma: PrismaService) {}
 
   async getProfile(): Promise<Profile | null> {
-    return this.prisma.profile.findFirst({
+    const profile = await this.prisma.profile.findFirst({
       include: {
         skills: true,
         experiences: true,
         projects: true,
       },
     });
+
+    return profile || null;
   }
 }

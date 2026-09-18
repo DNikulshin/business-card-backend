@@ -1,13 +1,14 @@
 import { Resolver, Query } from '@nestjs/graphql';
-import { Profile } from './models/profile.model.js';
 import { ProfileService } from './profile.service.js';
+import { Profile } from './models/profile.model.js';
 
 @Resolver(() => Profile)
 export class ProfileResolver {
   constructor(private readonly profileService: ProfileService) {}
 
-  @Query(() => Profile, { nullable: true })
+  @Query(() => Profile, { name: 'profile', nullable: true })
   async profile(): Promise<Profile | null> {
-    return this.profileService.getProfile();
+    const profile = await this.profileService.getProfile();
+    return profile || null;
   }
 }

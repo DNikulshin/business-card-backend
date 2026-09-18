@@ -2,16 +2,17 @@ import { PrismaClient } from '#prisma/client.js';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import { pathToFileURL } from 'node:url';
-import fs from 'node:fs';
 
-const isDist = fs.existsSync(
-  new URL('../dist/shared/config.js', import.meta.url),
-);
-const { DEFAULT_DATABASE_URL } = await (isDist
-  ? import('../dist/shared/config.js')
-  : import('../src/shared/config.js'));
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl && process.env.NODE_ENV === 'production') {
+  throw new Error(
+    'DATABASE_URL environment variable is required in production',
+  );
+}
 
-const DATABASE_URL = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
+const DATABASE_URL =
+  databaseUrl ||
+  'postgresql://postgres:postgres@127.0.0.1:5433/business_card?schema=public';
 
 export async function seedProfile(prisma: PrismaClient) {
   const profileData = {
