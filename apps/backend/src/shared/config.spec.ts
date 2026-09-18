@@ -69,4 +69,13 @@ describe('configFactory', () => {
     );
     expect(config.corsOrigin).toBe('https://example.com');
   });
+
+  it('respects BACKEND_PORT when PORT and BACKEND_DEV_PORT are omitted', () => {
+    delete process.env.PORT;
+    delete process.env.BACKEND_DEV_PORT;
+    process.env.BACKEND_PORT = '3008';
+
+    const config = configFactory();
+    expect(config.port).toBe(3008);
+  });
 });
