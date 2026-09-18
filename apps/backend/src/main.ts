@@ -8,13 +8,18 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors();
-
   const configService = app.get(ConfigService<AppConfig, true>);
 
   const nodeEnv = configService.getOrThrow<string>('nodeEnv', { infer: true });
   const port = configService.getOrThrow<number>('port', { infer: true });
   const host = configService.getOrThrow<string>('host', { infer: true });
+  const corsOrigin = configService.getOrThrow<string>('corsOrigin', {
+    infer: true,
+  });
+
+  app.enableCors({
+    origin: corsOrigin === '*' ? true : corsOrigin,
+  });
 
   await app.listen(port, host);
 
