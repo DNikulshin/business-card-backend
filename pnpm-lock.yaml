@@ -3464,8 +3464,8 @@ packages:
     resolution: {integrity: sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==}
     engines: {node: '>=18'}
 
-  which-typed-array@1.1.22:
-    resolution: {integrity: sha512-fvO4ExWMFsqyhG3AiPAObMuY1lxaqgYcxbc49CNdWDDECOJNgQyvsOWVwbZc+qf3rzRtxojBK+CMEv0Ld5CYpw==}
+  which-typed-array@1.1.23:
+    resolution: {integrity: sha512-JMh8aK+1B/0bk/YNupICmH5MgCq6yNLKYQUfsZtSDLLCCmxUkHjUY+oOlIa90lO7lHN1woAfpenLdlKpXy9o+A==}
     engines: {node: '>= 0.4'}
 
   which@2.0.2:
@@ -5714,7 +5714,7 @@ snapshots:
 
   is-typed-array@1.1.15:
     dependencies:
-      which-typed-array: 1.1.22
+      which-typed-array: 1.1.23
 
   is-unicode-supported@0.1.0: {}
 
@@ -6651,7 +6651,7 @@ snapshots:
 
   whatwg-mimetype@4.0.0: {}
 
-  which-typed-array@1.1.22:
+  which-typed-array@1.1.23:
     dependencies:
       available-typed-arrays: 1.0.7
       call-bind: 1.0.9
