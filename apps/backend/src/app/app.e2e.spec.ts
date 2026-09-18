@@ -54,7 +54,9 @@ describe('GraphQL E2E (AppModule)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    if (app) {
+      await app.close();
+    }
   });
 
   it('serves health check via HTTP GET', async () => {

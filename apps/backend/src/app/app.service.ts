@@ -17,7 +17,7 @@ export class AppService {
       throw new ServiceUnavailableException({
         status: 'error',
         database: 'disconnected',
-        message: (error as Error).message,
+        message: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString(),
       });
     }

@@ -14,6 +14,7 @@ import { DEFAULT_QUERY } from './constants.js';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: ['.env', '../../.env'],
       load: [config],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -26,6 +27,7 @@ import { DEFAULT_QUERY } from './constants.js';
           footer: false,
         }),
       ],
+      // Отключение csrfPrevention осознанно необходимо для работы встроенного Apollo Sandbox
       csrfPrevention: false,
       introspection: true,
     }),

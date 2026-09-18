@@ -7,7 +7,7 @@ import {
 import { PrismaClient } from '#prisma/client.js';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
-import { DATABASE_URL } from '../../shared/config.js';
+import { getDatabaseUrl } from '../../shared/config.js';
 
 @Injectable()
 export class PrismaService
@@ -18,7 +18,7 @@ export class PrismaService
   private readonly pool: Pool;
 
   constructor() {
-    const pool = new Pool({ connectionString: DATABASE_URL });
+    const pool = new Pool({ connectionString: getDatabaseUrl() });
     const adapter = new PrismaPg(pool);
     super({ adapter });
     this.pool = pool;

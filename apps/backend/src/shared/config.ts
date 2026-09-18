@@ -1,7 +1,12 @@
-export const DEFAULT_DATABASE_URL =
-  'postgresql://postgres:postgres@127.0.0.1:5433/business_card?schema=public';
-
-export const DATABASE_URL = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
+export function getDatabaseUrl(): string {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    throw new Error(
+      'DATABASE_URL is not set. Please provide a valid PostgreSQL connection string.',
+    );
+  }
+  return url;
+}
 
 export interface AppConfig {
   port: number;
@@ -26,7 +31,7 @@ export const configFactory = (): AppConfig => {
     port,
     host: process.env.HOST || '0.0.0.0',
     nodeEnv,
-    databaseUrl: process.env.DATABASE_URL || DEFAULT_DATABASE_URL,
+    databaseUrl: getDatabaseUrl(),
     corsOrigin: process.env.CORS_ORIGIN || '*',
   };
 };

@@ -1,18 +1,15 @@
+import './load-env.js';
 import { PrismaClient } from '#prisma/client.js';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import { pathToFileURL } from 'node:url';
 
-const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl && process.env.NODE_ENV === 'production') {
+const DATABASE_URL = process.env.DATABASE_URL;
+if (!DATABASE_URL) {
   throw new Error(
-    'DATABASE_URL environment variable is required in production',
+    'DATABASE_URL is not set. Please provide a connection string to run migrations or seed.',
   );
 }
-
-const DATABASE_URL =
-  databaseUrl ||
-  'postgresql://postgres:postgres@127.0.0.1:5433/business_card?schema=public';
 
 export async function seedProfile(prisma: PrismaClient) {
   const profileData = {

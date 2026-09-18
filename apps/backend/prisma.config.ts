@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import './prisma/load-env.js';
 import { defineConfig, type PrismaConfig } from 'prisma/config';
 
 export default defineConfig({
@@ -7,8 +7,6 @@ export default defineConfig({
     seed: 'tsx prisma/seed.ts',
   },
   datasource: {
-    url:
-      process.env.DATABASE_URL ||
-      'postgresql://postgres:postgres@127.0.0.1:5433/business_card?schema=public',
+    url: process.env.DATABASE_URL ?? '',
   },
 }) satisfies PrismaConfig;
