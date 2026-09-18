@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { configFactory } from './config.js';
+import { configFactory, DEFAULT_DATABASE_URL } from './config.js';
 
 describe('configFactory', () => {
   const originalEnv = process.env;
@@ -26,7 +26,7 @@ describe('configFactory', () => {
     expect(config.port).toBe(3001);
     expect(config.host).toBe('0.0.0.0');
     expect(config.nodeEnv).toBe('development');
-    expect(config.databaseUrl).toContain('127.0.0.1:5433');
+    expect(config.databaseUrl).toBe(DEFAULT_DATABASE_URL);
     expect(config.corsOrigin).toBe('*');
   });
 

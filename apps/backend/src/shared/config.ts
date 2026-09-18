@@ -1,9 +1,9 @@
-import path from 'node:path';
-import dotenv from 'dotenv';
+import { registerAs } from '@nestjs/config';
+import { DEFAULT_DATABASE_URL } from '../../prisma/constants.js';
 
-dotenv.config({ path: path.resolve(process.cwd(), '../../.env') });
+export const DATABASE_URL = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
 
-dotenv.config();
+export { DEFAULT_DATABASE_URL };
 
 export interface AppConfig {
   port: number;
@@ -13,26 +13,19 @@ export interface AppConfig {
   corsOrigin: string;
 }
 
-export const DEFAULT_DATABASE_URL =
-  'postgresql://postgres:postgres@127.0.0.1:5433/business_card?schema=public';
-
-export const DATABASE_URL = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
-
 export const configFactory = (): AppConfig => {
   const nodeEnv = process.env.NODE_ENV || 'development';
-  const defaultPort = nodeEnv === 'production' ? '3000' : '3001';
-
-  const rawPort =
+  const defaultPort = nodeEnv === 'production' ? 3000 : 3001;
+  const port = parseInt(
     process.env.PORT ||
-    (nodeEnv === 'production'
-      ? process.env.BACKEND_PORT
-      : process.env.BACKEND_DEV_PORT) ||
-    process.env.BACKEND_DEV_PORT ||
-    process.env.BACKEND_PORT ||
-    defaultPort;
+      (nodeEnv === 'development' ? process.env.BACKEND_DEV_PORT : '') ||
+      process.env.BACKEND_PORT ||
+      String(defaultPort),
+    10,
+  );
 
   return {
-    port: parseInt(rawPort, 10),
+    port,
     host: process.env.HOST || '0.0.0.0',
     nodeEnv,
     databaseUrl: process.env.DATABASE_URL || DEFAULT_DATABASE_URL,
@@ -40,4 +33,4 @@ export const configFactory = (): AppConfig => {
   };
 };
 
-export default configFactory;
+export const config = registerAs('app', configFactory);
