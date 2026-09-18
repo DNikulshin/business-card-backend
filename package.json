@@ -13,7 +13,10 @@
     "postprod": "node tooling/print-info.mjs",
     "clean": "docker compose down -v && docker compose -f docker-compose.dev.yml down -v",
     "logs": "docker compose logs -f backend",
-    "prepare": "husky || true"
+    "prepare": "husky || true",
+    "test": "pnpm --filter @repo/backend test",
+    "test:cov": "pnpm --filter @repo/backend test:cov",
+    "validate": "pnpm check-types && pnpm exec prettier --check \"**/*.{ts,tsx,md}\" && pnpm --filter @repo/backend test:cov"
   },
   "devDependencies": {
     "husky": "^9.1.7",
@@ -23,14 +26,7 @@
     "typescript": "^6.0.0"
   },
   "lint-staged": {
-    "apps/backend/src/**/*.ts": [
-      "oxlint --fix",
-      "prettier --write"
-    ],
-    "apps/backend/prisma/*.ts": [
-      "prettier --write"
-    ],
-    "*.{md,json,yaml,yml}": [
+    "*.{ts,tsx,js,mjs,json,md}": [
       "prettier --write"
     ]
   },

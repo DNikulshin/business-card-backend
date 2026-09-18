@@ -2,7 +2,10 @@ import { PrismaClient } from '#prisma/client.js';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import { pathToFileURL } from 'node:url';
-import { DATABASE_URL } from '../src/shared/config.js';
+
+const DATABASE_URL =
+  process.env.DATABASE_URL ||
+  'postgresql://postgres:postgres@127.0.0.1:5433/business_card?schema=public';
 
 export async function seedProfile(prisma: PrismaClient) {
   const profileData = {

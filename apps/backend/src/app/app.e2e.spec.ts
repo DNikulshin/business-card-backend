@@ -4,6 +4,7 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from './app.module.js';
 import { ProfileService } from '../features/profile/profile.service.js';
+import { PrismaService } from '../services/prisma/prisma.service.js';
 
 describe('GraphQL E2E (AppModule)', () => {
   let app: INestApplication;
@@ -42,6 +43,10 @@ describe('GraphQL E2E (AppModule)', () => {
       .useValue({
         getProfile: () => Promise.resolve(mockProfile),
       })
+      .overrideProvider(PrismaService)
+      .useValue({
+        $queryRaw: () => Promise.resolve([{ '?column?': 1 }]),
+      })
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -56,6 +61,7 @@ describe('GraphQL E2E (AppModule)', () => {
     const res = await request(app.getHttpServer()).get('/health');
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ok');
+    expect(res.body.database).toBe('connected');
   });
 
   it('resolves profile query with nested relations over GraphQL POST /graphql', async () => {
